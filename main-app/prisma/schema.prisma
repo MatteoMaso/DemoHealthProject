@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id           String        @id @unique @default(cuid())
+  birthdayDate DateTime?     @map("birthday_date") @db.Date
+  gender       Gender?
+  ethnicity    Ethnicity?
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime?     @updatedAt @map("updated_at")
+  observations Observation[]
+}
+
+enum Gender {
+  Other
+  Male
+  Female
+}
+
+// This is for pure example purposes, it 
+enum Ethnicity {
+  Hispanic
+  White
+  Black
+  Asian
+  AmericanIndian
+  NativeHawaiian
+  MiddleEasternOrNorthAfrican
+  Multiracial
+}
+
+model Observation {
+  id                 String           @id @default(cuid())
+  clientId           String           @map("client_id") @db.VarChar(36) //TODO: check this type
+  client             Client?          @relation(fields: [clientId], references: [id])
+  dateTesting        DateTime?        @map("date_testing") @db.Date // TODO: add indexing
+  creatine           Float?
+  chloride           Float?
+  fastingGlucose     Float?           @map("fasting_glucose")
+  potassium          Float?
+  sodium             Float?
+  totalCalcium       Float?           @map("total_calcium")
+  totalProtein       Float?           @map("total_protein")
+  creatineUnit       MeasurementUnit? @map("creatine_unit")
+  chlorideUnit       MeasurementUnit? @map("chloride_unit")
+  fastingGlucoseUnit MeasurementUnit? @map("fasting_glucose_unit")
+  potassiumUnit      MeasurementUnit? @map("potassium_unit")
+  sodiumUnit         MeasurementUnit? @map("sodium_unit")
+  totalCalciumUnit   MeasurementUnit? @map("total_calcium_unit")
+  totalProteinUnit   MeasurementUnit? @map("total_protein_unit")
+}
+
+// For semplicity I'm using a single unit for all the measurements
+enum MeasurementUnit {
+  mgdl
+  mmoll
+  ul
+  gdl
+}
