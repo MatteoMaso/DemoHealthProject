@@ -1,0 +1,25 @@
+{
+  "name": "data-fetcher",
+  "version": "0.1.0",
+  "main": "main.js",
+  "author": "Matteo Maso",
+  "license": "MIT",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "dev": "nodemon --exec ts-node src/main.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "nodemon": "^3.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "ts-node": "^10.9.2",
+    "zod": "^3.23.8"
+  }
+}
