@@ -1,0 +1,44 @@
+services:
+  
+  db:
+    image: postgres:16.3
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: core
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  main-app:
+    build: ./main-app
+    environment:
+      - PORT=3002
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/core?schema=public
+    ports:
+      - "3002:3002"
+    restart: always
+    depends_on:
+      - db
+
+  data-fetcher:
+    build: ./data-fetcher
+    environment:
+      - FETCH_PATIENT_API_URL=https://mockapi-furw4tenlq-ez.a.run.app/data
+      - MAIN_INTERNAL_API_URL=http://main-app:3002
+    depends_on:
+      - main-app
+
+  webapp:
+    build: ./webapp
+    ports:
+      - "3000:3000"
+    environment:
+      - MAIN_API_URL=http://main-app:3002
+    depends_on:
+      - main-app
+
+volumes:
+  pgdata:
